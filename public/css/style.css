@@ -1,0 +1,167 @@
+* {
+  margin: 0;
+
+}
+html{
+  background-color: #ccc;
+  background: url('http://www.powerpointhintergrund.com/download/book-open-book-pages-parchment-with-book-background-5935');
+  background-size: cover;
+
+}
+body {
+  margin: 0 auto;
+  width: 100%;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  /*background-color: #ccc;*/
+  height: 100vh;
+}
+
+.container menu {
+display: flex;
+  justify-content: flex-start;
+}
+
+#menu {
+  display: flex;
+  align-self: center;
+  background-color: #C70039;
+  width: 20%;
+  position: static;
+  height: 50vh;
+  opacity: 0.7
+}
+
+#menu .listItem {
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  align-self: center;
+  list-style-type: none;
+  padding: 10px 10px 10px 10px;
+}
+
+#menu .listItem li {
+  width: 100%;
+  text-align: center;
+  padding: 5px;
+  background-color: #000;
+  width: 95%;
+  margin-bottom: 2px;
+  font-size: 19px;
+}
+
+#menu .listItem li a {
+  width: 100%;
+  text-decoration: none;
+  color: #fff;
+}
+#edit{
+  margin: auto;
+}
+#edit p{
+  font-size: 19px;
+  padding: 15px 0 0 0
+}
+.bookData{
+  display: none;
+}
+.backgroundimg{
+}
+.container .bookData {
+  /*display: flex;*/
+  justify-content: space-between;
+  width: 50%;
+  background-color: #FF5733;
+  align-self: center;
+  padding: 15px;
+  color: #fff;
+  border-radius: 15px;
+  font-size: 18px;
+  margin: auto;
+}
+
+.bookData form {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+
+}
+
+.bookData form div {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  text-align: left;
+  margin-bottom: 5px;
+}
+
+.bookData form div label {
+  width: 50%;
+}
+
+.bookData form div input {
+  width: 50%;
+  border-radius: 2px;
+  border: none;
+  height: 25px;
+  font-size: 18px;
+  outline: none;
+}
+
+.booklist {
+  display: none;
+}
+
+td, th {
+  border: 1px solid black;
+  padding: 20px;
+  color: #fff;
+  font-size: 18px;
+
+}
+th {
+  background-color: #FF5733;
+}
+td{
+  background-color: #FF5733;
+  opacity: .7
+}
+
+table {
+  border-collapse: collapse;
+  /*width: 100%;*/
+  margin: auto;
+}
+
+th {
+  height: 50px;
+}
+button{
+  background-color: #3AF20D;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 10px;
+  margin-left: 2px
+}
+.createButton {
+  justify-content: center;
+  width: 100%;
+  padding: 10px;
+  outline: none;
+  background-color: #3AF20D;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  cursor: pointer;
+}
