@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Library</title>
+  <link rel="stylesheet" href"./public/css/style.css">
+</head>
+
+<body>
+  <section class="container">
+
+    <div id="menu">
+
+      <ul class="listItem">
+        <li><a href="#" id="addBook">Add Books</a></li>
+        <li><a href="#" id="allBook">All Books</a></li>
+
+      </ul>
+    </div>
+    <div class="backgroundimg">
+
+    </div>
+    <div id="add" class="bookData">
+
+      <form action="index.html" method="post">
+        <div>
+          <label for="Btitle">
+            Book title:
+          </label>
+          <input type="text" name="Book title" id="Btitle">
+        </div>
+        <div>
+          <label for="Bauthor">
+            Book author : </label>
+          <input type="text" name="Book author" id="Bauthor">
+        </div>
+        <div>
+          <label for="Bedition">
+            Edition : </label>
+          <input type="text" name="Edition" id="Bedition">
+        </div>
+        <div>
+          <label for="Bpublisher">
+            Publisher :   </label>
+          <input type="text" name="Publisher" id="Bpublisher">
+
+        </div>
+        <button type="button" name="button" id="create" class="createButton">Create</button>
+      </form>
+    </div>
+
+    <table id="table" class="booklist">
+      <tr>
+        <th>Title</th>
+        <th>Auther</th>
+        <th>Edition</th>
+        <th>Publisher</th>
+        <th>Option</th>
+      </tr>
+    </table>
+    <div class="edit" id="edit">
+
+    </div>
+  </section>
+
+  <script type="text/javascript" src="./public/js/fetch.js"></script>
+  <script type="text/javascript" src="./public/js/dom.js"></script>
+</body>
+
+</html>
