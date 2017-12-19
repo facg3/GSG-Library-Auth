@@ -1,9 +1,9 @@
 const test = require('tape');
-const dbconnection = require('../Database/dbconnection.js');
-const insertData = require('../backend-src/query/insert.js');
-const getData = require('../backend-src/query/selectAll.js');
-const updateData = require('../backend-src/query/update.js');
-const deleteData = require('../backend-src/query/deleteBook.js');
+const dbconnection = require('../src/database/dbconnection.js');
+const insertData = require('../src/query/insert.js');
+const getData = require('../src/query/selectAll.js');
+const updateData = require('../src/query/update.js');
+const deleteData = require('../src/query/deleteBook.js');
 
 test('should insert data into data base', (t) => {
   insertData('fake','fake','fake','fake', (err, result)=> {

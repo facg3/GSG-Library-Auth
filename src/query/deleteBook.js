@@ -1,4 +1,4 @@
-const connection = require('../../Database/dbconnection');
+const connection = require('../database/dbconnection');
 const deleteData =(id,cb)=>{
   const sql = `DELETE FROM books WHERE id = ${id}`;
 connection.query(sql,(err,data)=>{

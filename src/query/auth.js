@@ -1,4 +1,4 @@
-const connection = require('../../Database/dbconnection');
+const connection = require('../database/dbconnection');
 
 const insertData =(title,author,edition,publisher,cb)=>{
   const sql = {

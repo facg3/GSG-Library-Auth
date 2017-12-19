@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node test/db.test.js",
-    "start": "nodemon backend-src/server.js",
-    "watch": "node Database/build.js"
+    "start": "nodemon src/script/server.js",
+    "watch": "node database/build.js"
   },
   "repository": {
     "type": "git",

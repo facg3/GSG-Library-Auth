@@ -1,6 +1,5 @@
 const http = require('http');
 
-
 const router = require('./router.js');
 
 const host = process.env.HOST || 'localhost';

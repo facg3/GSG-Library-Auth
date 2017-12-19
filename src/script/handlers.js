@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
-const insert = require('./query/insert');
-const showData = require('./query/selectAll');
-const deleteBook = require('./query/deleteBook');
-const editBook = require('./query/update');
+const insert = require('../query/insert');
+const showData = require('../query/selectAll');
+const deleteBook = require('../query/deleteBook');
+const editBook = require('../query/update');
 
 const homepageHandler = (req, res) => {
   fs.readFile(path.join(__dirname, '..', 'public', 'index.html'), (err, file) => {

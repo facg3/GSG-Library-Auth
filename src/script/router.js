@@ -6,7 +6,7 @@ const router = (request, response) => {
   } = request;
   if (url === '/') {
     handlers.homepageHandler(request, response);
-  } else if (url.startsWith('/public') || url.startsWith('/frontend-src')) {
+  } else if (url.startsWith('/public')) {
     handlers.publicHandler(request, response);
   } else if (url === '/insertData') {
     handlers.insertData(request, response);
