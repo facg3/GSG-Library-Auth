@@ -6,7 +6,7 @@
   "scripts": {
     "test": "node test/db.test.js",
     "start": "nodemon src/script/server.js",
-    "watch": "node database/build.js"
+    "watch": "node src/database/build.js"
   },
   "repository": {
     "type": "git",
