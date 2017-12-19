@@ -6,15 +6,15 @@ const deleteBook = require('../query/deleteBook');
 const editBook = require('../query/update');
 
 const homepageHandler = (req, res) => {
-  fs.readFile(path.join(__dirname, '..', 'public', 'index.html'), (err, file) => {
+  fs.readFile(path.join(__dirname, '..', '..', 'public', 'index.html'), (err, file) => {
     if (err) {
       res.writeHead(500, {
-        'content-type': 'text/html'
+        'content-type': 'text/html',
       });
       res.end('<h1>SERVER ERROR</h1>');
     } else {
       res.writeHead(200, {
-        'content-type': 'text/html'
+        'content-type': 'text/html',
       });
       res.end(file);
     }
@@ -23,7 +23,7 @@ const homepageHandler = (req, res) => {
 
 const publicHandler = (req, res) => {
   const {
-    url
+    url,
   } = req;
   const extension = url.split('.')[1];
   const filetype = {
@@ -34,10 +34,10 @@ const publicHandler = (req, res) => {
     img: 'image/png',
   };
 
-  fs.readFile(path.join(__dirname, '..', url), (err, file) => {
+  fs.readFile(path.join(__dirname, '..', '..', url), (err, file) => {
     if (err) {
       res.writeHead(500, {
-        'content-type': 'text/html'
+        'content-type': 'text/html',
       });
       res.end('<h1>SERVER ERROR</h1>');
     } else {
@@ -45,92 +45,90 @@ const publicHandler = (req, res) => {
       res.end(file);
     }
   });
-
 };
 const insertData = (req, res) => {
-  var allData = '';
-  req.on('data', function(chunkOfData) {
+  let allData = '';
+  req.on('data', (chunkOfData) => {
     allData += chunkOfData;
   });
-  req.on('end', function() {
+  req.on('end', () => {
     const convertData = JSON.parse(allData);
 
     insert(convertData.title, convertData.author, convertData.edition, convertData.publisher, (err, response) => {
       if (err) {
         res.writeHead(500, {
-          'content-Type': 'text/html'
+          'content-Type': 'text/html',
         });
-        return res.end("<h1>ERROR handling</h1>");
+        return res.end('<h1>ERROR handling</h1>');
       }
       res.writeHead(200, {
-        'Content-Type': ' text/html'
+        'Content-Type': ' text/html',
       });
       return res.end();
     });
-
-
   });
-}
+};
 const viewData = (req, res) => {
   showData((err, response) => {
     if (err) {
       res.writeHead(500, {
-        'Content-Type': 'text/html'
+        'Content-Type': 'text/html',
       });
-      return res.end("<h1>ERROR handling</h1>");
+      return res.end('<h1>ERROR handling</h1>');
     }
-    var data = JSON.stringify(response);
+    const data = JSON.stringify(response);
     res.writeHead(200, {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     });
     return res.end(data);
   });
-
-}
+};
 const deleteData = (req, res) => {
-  var idBook = '';
-  req.on('data', function(chunkOfData) {
+  let idBook = '';
+  req.on('data', (chunkOfData) => {
     idBook += chunkOfData;
   });
-  req.on('end', function() {
+  req.on('end', () => {
     // const convertData = JSON.parse(allData);
 
     deleteBook(idBook, (err, response) => {
       if (err) {
         res.writeHead(500, {
-          'content-Type': 'text/html'
+          'content-Type': 'text/html',
         });
-        return res.end("<h1>ERROR handling</h1>");
+        return res.end('<h1>ERROR handling</h1>');
       }
       res.writeHead(200, {
-        'Content-Type': ' text/html'
+        'Content-Type': ' text/html',
       });
       return res.end();
     });
   });
-}
+};
 const editData = (req, res) => {
-  var Book = '';
-  req.on('data', function(chunkOfData) {
+  let Book = '';
+  req.on('data', (chunkOfData) => {
     Book += chunkOfData;
   });
-  req.on('end', function() {
+  req.on('end', () => {
     const convertData = JSON.parse(Book);
-    editBook(convertData.title,convertData.author, convertData.edtion,
-       convertData.publisher, convertData.id, (err, response) => {
-      if (err) {
-        res.writeHead(500, {
-          'content-Type': 'text/html'
+    editBook(
+      convertData.title, convertData.author, convertData.edtion,
+      convertData.publisher, convertData.id, (err, response) => {
+        if (err) {
+          res.writeHead(500, {
+            'content-Type': 'text/html',
+          });
+          res.end('<h1>ERROR handling</h1>');
+        }
+        res.writeHead(200, {
+          'Content-Type': 'application/json',
         });
-         res.end("<h1>ERROR handling</h1>");
-      }
-      res.writeHead(200, {
-        'Content-Type': 'application/json'
-      });
-      res.end();
-    });
+        res.end();
+      },
+    );
   });
-}
+};
 
 module.exports = {
   publicHandler,
@@ -138,5 +136,5 @@ module.exports = {
   insertData,
   viewData,
   deleteData,
-  editData
-}
+  editData,
+};
