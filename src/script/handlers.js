@@ -1,14 +1,22 @@
 const fs = require('fs');
+
 const path = require('path');
+
 const bcrypt = require('./cryptp');
 const jwt = require('jsonwebtoken');
 const cookie = require('cookie');
+
 const insert = require('../query/insert');
+
 const showData = require('../query/selectAll');
+
 const deleteBook = require('../query/deleteBook');
+
 const editBook = require('../query/update');
 const insertUser = require('../query/insertUser');
 const checkUserdb = require('../query/checkUser');
+
+const jwt = require('jsonwebtoken');
 
 const homepageHandler = (req, res) => {
   fs.readFile(path.join(__dirname, '..', '..', 'public', 'index.html'), (err, file) => {
@@ -96,18 +104,21 @@ const insertData = (req, res) => {
   req.on('end', () => {
     const convertData = JSON.parse(allData);
 
-    insert(convertData.title, convertData.author, convertData.edition, convertData.publisher, (err, response) => {
-      if (err) {
-        res.writeHead(500, {
-          'content-Type': 'text/html',
+    insert(
+      convertData.title, convertData.author, convertData.edition, convertData.publisher,
+      (err, book) => {
+        if (err) {
+          res.writeHead(500, {
+            'content-Type': 'text/html',
+          });
+          return res.end('<h1>ERROR handling</h1>');
+        }
+        res.writeHead(200, {
+          'Content-Type': ' text/html',
         });
-        return res.end('<h1>ERROR handling</h1>');
-      }
-      res.writeHead(200, {
-        'Content-Type': ' text/html',
-      });
-      return res.end();
-    });
+        return res.end();
+      },
+    );
   });
 };
 const addUser = (req, res) => {
@@ -184,14 +195,14 @@ const checkUser = (req, res) => {
 //   })
 // };
 const viewData = (req, res) => {
-  showData((err, response) => {
+  showData((err, books) => {
     if (err) {
       res.writeHead(500, {
         'Content-Type': 'text/html',
       });
       return res.end('<h1>ERROR handling</h1>');
     }
-    const data = JSON.stringify(response);
+    const data = JSON.stringify(books);
     res.writeHead(200, {
       'Content-Type': 'application/json',
     });
@@ -205,7 +216,7 @@ const deleteData = (req, res) => {
   });
   req.on('end', () => {
 
-    deleteBook(idBook, (err, response) => {
+    deleteBook(idBook, (err, book) => {
       if (err) {
         res.writeHead(500, {
           'content-Type': 'text/html',
@@ -225,10 +236,10 @@ const editData = (req, res) => {
     Book += chunkOfData;
   });
   req.on('end', () => {
-    const convertData = JSON.parse(Book);
+    const converedtData = JSON.parse(Book);
     editBook(
-      convertData.title, convertData.author, convertData.edtion,
-      convertData.publisher, convertData.id, (err, response) => {
+      converedtData.title, converedtData.author, converedtData.edtion,
+      converedtData.publisher, converedtData.id, (err, data) => {
         if (err) {
           res.writeHead(500, {
             'content-Type': 'text/html',
