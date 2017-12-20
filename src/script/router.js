@@ -16,7 +16,15 @@ const router = (request, response) => {
     handlers.deleteData(request, response);
   } else if (url === '/editData') {
     handlers.editData(request, response);
-  } else {
+  }else if (url === '/signup') {
+    handlers.SignUp(request, response);
+  } else if (url === '/addUser') {
+    handlers.addUser(request, response);
+  }else if (url === '/checkUser') {
+    handlers.checkUser(request, response);
+  }else if (url === '/login') {
+    handlers.login(request, response);
+  }  else {
     response.writeHead(404);
     response.end('PAGE NOT FOUND!!!!!!!!!!');
   }

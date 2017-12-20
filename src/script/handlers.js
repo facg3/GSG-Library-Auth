@@ -2,6 +2,10 @@ const fs = require('fs');
 
 const path = require('path');
 
+const bcrypt = require('./cryptp');
+const jwt = require('jsonwebtoken');
+const cookie = require('cookie');
+
 const insert = require('../query/insert');
 
 const showData = require('../query/selectAll');
@@ -9,6 +13,8 @@ const showData = require('../query/selectAll');
 const deleteBook = require('../query/deleteBook');
 
 const editBook = require('../query/update');
+const insertUser = require('../query/insertUser');
+const checkUserdb = require('../query/checkUser');
 
 const jwt = require('jsonwebtoken');
 
@@ -27,7 +33,44 @@ const homepageHandler = (req, res) => {
     }
   });
 };
-
+const SignUp = (req, res) => {
+  if (cookie.parse(req.headers.cookie).token) {
+      res.writeHead(302, {'location': '/'});
+      res.end();
+}
+  fs.readFile(path.join(__dirname, '..', '..', 'public', 'signup.html'), (err, file) => {
+    if (err) {
+      res.writeHead(500, {
+        'content-type': 'text/html',
+      });
+      res.end('<h1>SERVER ERROR</h1>');
+    } else {
+      res.writeHead(200, {
+        'content-type': 'text/html',
+      });
+      res.end(file);
+    }
+  });
+};
+const login = (req, res) => {
+  if (req.headers.cookie) {
+      res.writeHead(302, {'location': '/'});
+      res.end();
+}
+  fs.readFile(path.join(__dirname, '..', '..', 'public', 'login.html'), (err, file) => {
+    if (err) {
+      res.writeHead(500, {
+        'content-type': 'text/html',
+      });
+      res.end('<h1>SERVER ERROR</h1>');
+    } else {
+      res.writeHead(200, {
+        'content-type': 'text/html',
+      });
+      res.end(file);
+    }
+  });
+};
 const publicHandler = (req, res) => {
   const {
     url,
@@ -78,6 +121,79 @@ const insertData = (req, res) => {
     );
   });
 };
+const addUser = (req, res) => {
+  let allData = '';
+  req.on('data', (chunkOfData) => {
+    allData += chunkOfData;
+  });
+  req.on('end', () => {
+    const convertData = JSON.parse(allData);
+    hashPassword(convertData.Password, (err, hash) => {
+      console.log('convertData', err);
+      insertUser(convertData.username, hash, (err, response) => {
+        console.log("mnbv",err);
+        if (err) {
+          res.writeHead(500, {
+            'content-Type': 'text/html',
+          });
+          return res.end('<h1>ERROR handling</h1>');
+        }
+
+        res.writeHead(200, {
+          'Content-Type': 'text/plain',
+        });
+        return res.end('/');
+      });
+    });
+
+  });
+};
+
+// const hashPassword = (password, callback) => {
+//   bcrypt.genSalt(10, (err, salt) => {
+//     bcrypt.hash(password, salt, (err, hash) => {
+//       callback(null, hash);
+//     })
+//   })
+// };
+const checkUser = (req, res) => {
+  let allData = '';
+  req.on('data', (chunkOfData) => {
+    allData += chunkOfData;
+  });
+  req.on('end', () => {
+    const convertData = JSON.parse(allData);
+    checkUserdb(convertData.username, (err, response) => {
+      console.log("responsezz", response);
+      const tokens = jwt.sign({
+        userId: response[0].id,
+        username: response[0].username
+      }, 'secret');
+
+      if (err) {
+        res.writeHead(500, {
+          'content-Type': 'text/html',
+        });
+        res.end('<h1>ERROR handling</h1>');
+      }
+      comparePasswords(convertData.Password, response[0].password, (err, hash) => {
+        res.writeHead(200, {
+            'content-Type': 'text/html',
+          'Set-Cookie': `token=${tokens}; httpOnly`,
+          // 'Content-Type': 'application/json',
+        });
+        res.end();
+      })
+
+    }, );
+
+  });
+};
+// const comparePasswords = (password, hashedPassword, callback) => {
+//   bcrypt.compare(password, hashedPassword, (err, hash) => {
+//     callback(null, hash);
+//   })
+// };
 const viewData = (req, res) => {
   showData((err, books) => {
     if (err) {
@@ -99,7 +215,6 @@ const deleteData = (req, res) => {
     idBook += chunkOfData;
   });
   req.on('end', () => {
-    // const convertData = JSON.parse(allData);
 
     deleteBook(idBook, (err, book) => {
       if (err) {
@@ -147,4 +262,8 @@ module.exports = {
   viewData,
   deleteData,
   editData,
+  SignUp,
+  addUser,
+  checkUser,
+  login
 };

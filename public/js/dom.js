@@ -34,10 +34,30 @@ button.addEventListener('click', () => {
 
 allBook.addEventListener('click', () => {
   add.style.display = 'none';
-  table.style.display = 'none';
+  // table.style.display = 'none';
   fetchPost('GET', '/viewData', (err, res) => {
     if (err) {} else {
+
       const data = JSON.parse(res);
+      table.textContent = "";
+      var tr = document.createElement('tr');
+      table.appendChild(tr);
+      var th1 = document.createElement('th');
+      th1.textContent = "Title";
+      table.appendChild(th1);
+      var th2 = document.createElement('th');
+      th2.textContent = "Author";
+      table.appendChild(th2);
+      var th3 = document.createElement('th');
+      th3.textContent = "Edition";
+      table.appendChild(th3);
+      var th4 = document.createElement('th');
+      th4.textContent = "Publisher";
+      table.appendChild(th4);
+      var th5 = document.createElement('th');
+      th5.textContent = "Option";
+      table.appendChild(th5);
+
       data.forEach((item) => {
         functionAdd(item);
       });
@@ -46,41 +66,78 @@ allBook.addEventListener('click', () => {
   table.style.display = 'block';
 });
 
+function functionAdd(item) {
+
+  var tr = document.createElement('tr');
+  var ptitle = document.createElement('td');
+  ptitle.textContent = item.title;
+  var pauthor = document.createElement('td');
+  pauthor.textContent = item.author;
+  var pedition = document.createElement('td');
+  pedition.textContent = item.edition;
+  var ppublisher = document.createElement('td');
+  ppublisher.textContent = item.publisher;
+  var deleteBook = document.createElement('button');
+  deleteBook.textContent = "DELETE";
+  var editBook = document.createElement('button');
+  editBook.textContent = "EDIT";
+  var option = document.createElement('td');
+
+  tr.appendChild(ptitle);
+  tr.appendChild(pauthor);
+  tr.appendChild(pedition);
+  tr.appendChild(ppublisher);
+  option.appendChild(deleteBook);
+  option.appendChild(editBook);
+  tr.appendChild(option);
+  table.appendChild(tr);
+  deleteBook.addEventListener("click", function(event) {
+    functionDelete(item.id, tr);
+  });
+  editBook.addEventListener("click", function(event) {
+    edit.textContent = "";
+    edit.style.display = "block";
+    functionEdit(item, ptitle, pauthor, pedition, ppublisher);
+  });
+}
 function functionDelete(id, tr) {
+
   const confirmToDelete = confirm('Confirm To Delete Book! ;( ');
+
   if (confirmToDelete === true) {
     fetchPost('POST', '/deleteData', (err, res) => {
       if (err) {} else {
         tr.remove();
       }
     }, JSON.stringify(id));
-  } else {
-  }
+  } else {}
 }
 
 function functionEdit(item, ptitle, pauthor, pedition, ppublisher) {
-  const spanTitle = document.createElement('p');
-  spanTitle.innerHTML = 'Edit Title';
-  const inputTitle = document.createElement('INPUT');
-  inputTitle.setAttribute('type', 'text');
-  inputTitle.setAttribute('value', item.title);
-  const spanAuthor = document.createElement('p');
-  spanAuthor.innerHTML = 'Edit Author';
-  const inputAuthor = document.createElement('INPUT');
-  inputAuthor.setAttribute('type', 'text');
-  inputAuthor.setAttribute('value', item.author);
-  const spanEdtioin = document.createElement('p');
-  spanEdtioin.innerHTML = 'Edit Edtion';
-  const inputEdtion = document.createElement('INPUT');
-  inputEdtion.setAttribute('type', 'text');
-  inputEdtion.setAttribute('value', item.edition);
-  const spanPublisher = document.createElement('p');
-  spanPublisher.innerHTML = 'Edit Publisher';
-  const inputPublisher = document.createElement('INPUT');
-  inputPublisher.setAttribute('type', 'text');
-  inputPublisher.setAttribute('value', item.publisher);
-  const editBook = document.createElement('button');
-  editBook.innerHTML = 'EDIT';
+  console.log("insrghjkl");
+  var spanTitle = document.createElement("p");
+  spanTitle.textContent = "Edit Title";
+  var inputTitle = document.createElement("INPUT");
+  inputTitle.setAttribute("type", "text");
+  inputTitle.setAttribute("value", item.title);
+  var spanAuthor = document.createElement("p");
+  spanAuthor.textContent = "Edit Author";
+  var inputAuthor = document.createElement("INPUT");
+  inputAuthor.setAttribute("type", "text");
+  inputAuthor.setAttribute("value", item.author);
+  var spanEdtioin = document.createElement("p");
+  spanEdtioin.textContent = "Edit Edtion";
+  var inputEdtion = document.createElement("INPUT");
+  inputEdtion.setAttribute("type", "text");
+  inputEdtion.setAttribute("value", item.edition);
+  var spanPublisher = document.createElement("p");
+  spanPublisher.textContent = "Edit Publisher";
+  var inputPublisher = document.createElement("INPUT");
+  inputPublisher.setAttribute("type", "text");
+  inputPublisher.setAttribute("value", item.publisher);
+  var editBook = document.createElement('button');
+  editBook.textContent = "EDIT";
+
   edit.appendChild(spanTitle);
   edit.appendChild(inputTitle);
   edit.appendChild(spanAuthor);
@@ -102,46 +159,14 @@ function functionEdit(item, ptitle, pauthor, pedition, ppublisher) {
     const convertData = JSON.stringify(newData);
     fetchPost('POST', '/editData', (err, res) => {
       if (err) {} else {
-        ptitle.innerHTML = inputTitle.value;
-        pauthor.innerHTML = inputAuthor.value;
-        pedition.innerHTML = inputEdtion.value;
-        ppublisher.innerHTML = inputPublisher.value;
+        ptitle.textContent = inputTitle.value;
+        pauthor.textContent = inputAuthor.value;
+        pedition.textContent = inputEdtion.value;
+        ppublisher.textContent = inputPublisher.value
         edit.style.display = 'none';
       }
     }, convertData);
-    event.preventDefault();
-  });
-}
 
-function functionAdd(item) {
-  const tr = document.createElement('tr');
-  const ptitle = document.createElement('td');
-  ptitle.innerHTML = item.title;
-  const pauthor = document.createElement('td');
-  pauthor.innerHTML = item.author;
-  const pedition = document.createElement('td');
-  pedition.innerHTML = item.edition;
-  const ppublisher = document.createElement('td');
-  ppublisher.innerHTML = item.publisher;
-  const deleteBook = document.createElement('button');
-  deleteBook.innerHTML = 'DELETE';
-  const editBook = document.createElement('button');
-  editBook.innerHTML = 'EDIT';
-  const option = document.createElement('td');
 
-  tr.appendChild(ptitle);
-  tr.appendChild(pauthor);
-  tr.appendChild(pedition);
-  tr.appendChild(ppublisher);
-  option.appendChild(deleteBook);
-  option.appendChild(editBook);
-  tr.appendChild(option);
-  table.appendChild(tr);
-  deleteBook.addEventListener('click', (event) => {
-    functionDelete(item.id, tr);
-    event.preventDefault();
-  });
-  editBook.addEventListener('click', () => {
-    functionEdit(item, ptitle, pauthor, pedition, ppublisher);
   });
 }
