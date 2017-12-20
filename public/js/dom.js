@@ -31,7 +31,16 @@ button.addEventListener('click', () => {
     }
   }, JSON.stringify(obj));
 });
-
+logout.addEventListener('click', (e) => {
+  e.preventDefault();
+  fetchPost('GET', '/logout', (err, res) => {
+    if (err) {
+      console.log(err);
+    } else {
+        if(res === '/') window.location.pathname = '/login';
+    }
+  });
+});
 allBook.addEventListener('click', () => {
   add.style.display = 'none';
   // table.style.display = 'none';
