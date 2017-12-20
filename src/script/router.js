@@ -24,7 +24,9 @@ const router = (request, response) => {
     handlers.checkUser(request, response);
   }else if (url === '/login') {
     handlers.login(request, response);
-  }  else {
+  }else if (url === '/logout') {
+    handlers.logout(request, response);
+  }   else {
     response.writeHead(404);
     response.end('PAGE NOT FOUND!!!!!!!!!!');
   }

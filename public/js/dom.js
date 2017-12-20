@@ -4,6 +4,7 @@ var addBook = document.getElementById('addBook');
 var add = document.getElementById('add');
 var table = document.getElementById('table');
 var edit = document.getElementById('edit');
+var logout = document.getElementById('logout');
 
 addBook.addEventListener('click', () => {
   add.style.display = 'block';
@@ -32,7 +33,16 @@ button.addEventListener('click', () => {
   }, JSON.stringify(obj));
 
 });
-
+logout.addEventListener('click', (e) => {
+  e.preventDefault();
+  fetchPost('GET', '/logout', (err, res) => {
+    if (err) {
+      console.log(err);
+    } else {
+        if(res === '/') window.location.pathname = '/login';
+    }
+  });
+});
 allBook.addEventListener('click', () => {
   add.style.display = 'none';
   // table.style.display = 'none';

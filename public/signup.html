@@ -2,16 +2,40 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Sign Up</title>
+    <title>login</title>
+    <link rel="stylesheet" href='../public/css/login.css'>
   </head>
   <body>
-    <label for="username">UserName : <input type="text" name="username" id ="username"></label>
-    <label for="Password">Password : <input type="text" name="Password" id="Password"></label>
-    <label for="confirm">Coniferm Password : <input type="text" name="confirm"id="confirmPassword"></label>
-    <button type="button" name="SignUp" id="SignUp">SignUp</button>
-    <button type="button" name="login">login</button>
-    <script type="text/javascript" src="./public/js/fetch.js"></script>
-    <script type="text/javascript" src="./public/js/signupDom.js"></script>
 
+    <div id="login">
+  <form id="login_form" class='signup_form' action=''>
+    <div class="field_container">
+      <input type="text" placeholder="USER NAME" id = "username">
+    </div>
+
+    <div class="field_container">
+      <input type="Password" placeholder="Password" id = "Password">
+    </div>
+    <div class="field_container">
+      <input type="Password" placeholder="Confirm Password" id = "confirmPassword">
+    </div>
+    <div class="field_container">
+      <button id="sign_up_button">
+        <span class="button_text">Sign Up</span>
+      </button>
+    </div>
+
+        <!-- <div id="remember_me_container">
+          <input name="user[remember_me]" type="hidden" value="0"><input id="user_remember_me" name="user[remember_me]" type="checkbox" value="1">
+          <label class="login_link" for="user_remember_me" id="remember_me_label">stay signed in</label>
+        </div> -->
+        <div class="clearfix"></div>
+      </div>
+</form>
+
+
+</div>
+<script type="text/javascript" src="./public/js/fetch.js"></script>
+<script type="text/javascript" src="./public/js/signupDom.js"></script>
   </body>
 </html>

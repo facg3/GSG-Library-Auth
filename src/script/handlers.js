@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const bcrypt = require('./cryptp');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookie = require('cookie');
 const insert = require('../query/insert');
@@ -25,11 +25,13 @@ const homepageHandler = (req, res) => {
     }
   });
 };
+
+ // 0 false null undefined
 const SignUp = (req, res) => {
-  if (cookie.parse(req.headers.cookie).token) {
+  if (cookie.parse(req.headers.cookie || '').token) {
       res.writeHead(302, {'location': '/'});
       res.end();
-}
+  }
   fs.readFile(path.join(__dirname, '..', '..', 'public', 'signup.html'), (err, file) => {
     if (err) {
       res.writeHead(500, {
@@ -118,9 +120,7 @@ const addUser = (req, res) => {
   req.on('end', () => {
     const convertData = JSON.parse(allData);
     hashPassword(convertData.Password, (err, hash) => {
-      console.log('convertData', err);
       insertUser(convertData.username, hash, (err, response) => {
-        console.log("mnbv",err);
         if (err) {
           res.writeHead(500, {
             'content-Type': 'text/html',
@@ -138,13 +138,13 @@ const addUser = (req, res) => {
   });
 };
 
-// const hashPassword = (password, callback) => {
-//   bcrypt.genSalt(10, (err, salt) => {
-//     bcrypt.hash(password, salt, (err, hash) => {
-//       callback(null, hash);
-//     })
-//   })
-// };
+const hashPassword = (password, callback) => {
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(password, salt, (err, hash) => {
+      callback(null, hash);
+    })
+  })
+};
 const checkUser = (req, res) => {
   let allData = '';
   req.on('data', (chunkOfData) => {
@@ -153,36 +153,46 @@ const checkUser = (req, res) => {
   req.on('end', () => {
     const convertData = JSON.parse(allData);
     checkUserdb(convertData.username, (err, response) => {
-      console.log("responsezz", response);
-      const tokens = jwt.sign({
-        userId: response[0].id,
-        username: response[0].username
-      }, 'secret');
-
       if (err) {
         res.writeHead(500, {
           'content-Type': 'text/html',
         });
-        res.end('<h1>ERROR handling</h1>');
+        return res.end('<h1>ERROR handling</h1>');
       }
+      if (!response.length) {
+        return res.end('<h1>You are not a user. Please sign up</h1>');
+
+      }
+
+      const userData = {
+        userId: response[0].id,
+        username: response[0].username,
+        role: 'admin'
+      }
+
+      const tokens = jwt.sign(userData, 'secret');
+
       comparePasswords(convertData.Password, response[0].password, (err, hash) => {
         res.writeHead(200, {
             'content-Type': 'text/html',
-          'Set-Cookie': `token=${tokens}; httpOnly`,
+          'Set-Cookie': [
+            `token=${tokens}; httpOnly`,
+            `user=${JSON.stringify(userData)};`
+          ],
           // 'Content-Type': 'application/json',
         });
-        res.end();
+        res.end('/');
       })
 
     }, );
 
   });
 };
-// const comparePasswords = (password, hashedPassword, callback) => {
-//   bcrypt.compare(password, hashedPassword, (err, hash) => {
-//     callback(null, hash);
-//   })
-// };
+const comparePasswords = (password, hashedPassword, callback) => {
+  bcrypt.compare(password, hashedPassword, (err, hash) => {
+    callback(null, hash);
+  })
+};
 const viewData = (req, res) => {
   showData((err, response) => {
     if (err) {
@@ -219,6 +229,13 @@ const deleteData = (req, res) => {
     });
   });
 };
+const logout = (req, res) => {
+  res.writeHead(200, {
+      'content-Type': 'text/html',
+    'Set-Cookie': `token=0; Max-Age=0`,
+  });
+  res.end('/');
+};
 const editData = (req, res) => {
   let Book = '';
   req.on('data', (chunkOfData) => {
@@ -254,5 +271,6 @@ module.exports = {
   SignUp,
   addUser,
   checkUser,
-  login
+  login,
+  logout
 };

@@ -1,7 +1,8 @@
 
-const SignUp = document.getElementById('SignUp');
+const SignUpForm = document.querySelector('.signup_form');
 
-SignUp.addEventListener('click', () => {
+SignUpForm.addEventListener('submit', (e) => {
+  e.preventDefault();
   const username = document.getElementById('username');
   const Password = document.getElementById('Password');
   const confirmPassword = document.getElementById('confirmPassword');
@@ -10,7 +11,7 @@ if(Password.value === confirmPassword.value){
   fetchPost('POST', '/addUser', (err, res) => {
     if (err) {} else {
       // alert("Congrats U R User Now");
-      if(res === '/') window.location.pathname = '/login';
+      if(res === '/') window.location.pathname = '/';
     }
   }, JSON.stringify(user));
 }
