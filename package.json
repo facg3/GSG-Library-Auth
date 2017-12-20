@@ -19,7 +19,9 @@
   },
   "homepage": "https://github.com/facg3/GSG-Library#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "env2": "^2.2.0",
+    "jsonwebtoken": "^8.1.0",
     "pg": "^7.4.0"
   },
   "devDependencies": {
