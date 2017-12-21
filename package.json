@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node test/db.test.js",
-    "start": "nodemon src/script/server.js",
+    "start:watch": "nodemon src/script/server.js",
+    "start": " node src/script/server.js",
     "watch": "node src/database/build.js"
   },
   "repository": {

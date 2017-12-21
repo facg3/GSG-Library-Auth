@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('./cryptp.js');
 const jwt = require('jsonwebtoken');
 const cookie = require('cookie');
 const insert = require('../query/insert');
@@ -25,6 +25,10 @@ const homepageHandler = (req, res) => {
         res.end(file);
       }
     });
+  } else {
+    res.writeHead(302, { Location: '/' });
+    res.end();
+  }
 };
 
 const SignUp = (req, res) => {
@@ -116,7 +120,7 @@ const addUser = (req, res) => {
   });
   req.on('end', () => {
     const convertData = JSON.parse(allData);
-    hashPassword(convertData.Password, (err, hash) => {
+    bcrypt.hashPassword(convertData.Password).then((hash) => {
       insertUser(convertData.username, hash, (err, response) => {
         if (err) {
           res.writeHead(500, {
@@ -130,18 +134,12 @@ const addUser = (req, res) => {
         });
         return res.end('/');
       });
+    }).catch((error) => {
+      console.log(error);
     });
-
   });
 };
 
-const hashPassword = (password, callback) => {
-  bcrypt.genSalt(10, (err, salt) => {
-    bcrypt.hash(password, salt, (err, hash) => {
-      callback(null, hash);
-    })
-  })
-};
 const checkUser = (req, res) => {
   let allData = '';
   req.on('data', (chunkOfData) => {
@@ -155,36 +153,28 @@ const checkUser = (req, res) => {
           'content-Type': 'text/html',
         });
         return res.end('<h1>ERROR handling</h1>');
-      }
-      if (!response.length) {
+      } else if (!response.length) {
         return res.end('<h1>You are not a user. Please sign up</h1>');
-
       }
 
       const userData = {
         userId: response[0].id,
         username: response[0].username,
-      }
+      };
 
       const tokens = jwt.sign(userData, 'my secret');
 
-      comparePasswords(convertData.Password, response[0].password, (err, hash) => {
+      bcrypt.comparePasswords(convertData.Password, response[0].password).then((hash) => {
         res.writeHead(200, {
             'content-Type': 'text/html',
           'Set-Cookie': `token=${tokens}; httpOnly`
         });
         res.end('/');
       });
-
     });
-
   });
 };
-const comparePasswords = (password, hashedPassword, callback) => {
-  bcrypt.compare(password, hashedPassword, (err, hash) => {
-    callback(null, hash);
-  })
-};
+
 const viewData = (req, res) => {
   showData((err, books) => {
     if (err) {
@@ -206,7 +196,6 @@ const deleteData = (req, res) => {
     idBook += chunkOfData;
   });
   req.on('end', () => {
-
     deleteBook(idBook, (err, book) => {
       if (err) {
         res.writeHead(500, {
@@ -223,8 +212,8 @@ const deleteData = (req, res) => {
 };
 const logout = (req, res) => {
   res.writeHead(200, {
-      'content-Type': 'text/html',
-    'Set-Cookie': `token=0; Max-Age=0`,
+    'content-Type': 'text/html',
+    'Set-Cookie': 'token=0; Max-Age=0',
   });
   res.end('/');
 };
@@ -261,13 +250,13 @@ const checkAuth = (req, res , cb) => {
         cb(false , req.url);
       }else {
         req.user = decoded;
-        cb(true , req.url);
+        cb(true, req.url);
       }
     });
-  }else {
-    cb(false , req.url);
+  } else {
+    cb(false, req.url);
   }
-}
+};
 
 module.exports = {
   publicHandler,
@@ -281,5 +270,5 @@ module.exports = {
   checkUser,
   login,
   logout,
-  checkAuth
+  checkAuth,
 };
