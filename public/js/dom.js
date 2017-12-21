@@ -4,7 +4,7 @@ const addBook = document.getElementById('addBook');
 const add = document.getElementById('add');
 const table = document.getElementById('table');
 const edit = document.getElementById('edit');
-
+const logout = document.getElementById('logout')
 addBook.addEventListener('click', () => {
   add.style.display = 'block';
   table.style.display = 'none';
