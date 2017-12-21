@@ -15,22 +15,22 @@ const editBook = require('../query/update');
 const insertUser = require('../query/insertUser');
 const checkUserdb = require('../query/checkUser');
 
-const jwt = require('jsonwebtoken');
 
 const homepageHandler = (req, res) => {
-  fs.readFile(path.join(__dirname, '..', '..', 'public', 'index.html'), (err, file) => {
-    if (err) {
-      res.writeHead(500, {
-        'content-type': 'text/html',
-      });
-      res.end('<h1>SERVER ERROR</h1>');
-    } else {
-      res.writeHead(200, {
-        'content-type': 'text/html',
-      });
-      res.end(file);
-    }
-  });
+  console.log(req.user);
+    fs.readFile(path.join(__dirname, '..', '..', 'public', 'index.html'), (err, file) => {
+      if (err) {
+        res.writeHead(500, {
+          'content-type': 'text/html',
+        });
+        res.end('<h1>SERVER ERROR</h1>');
+      } else {
+        res.writeHead(200, {
+          'content-type': 'text/html',
+        });
+        res.end(file);
+      }
+    });
 };
 
  // 0 false null undefined
@@ -177,24 +177,20 @@ const checkUser = (req, res) => {
       const userData = {
         userId: response[0].id,
         username: response[0].username,
-        role: 'admin'
       }
 
-      const tokens = jwt.sign(userData, 'secret');
+      const tokens = jwt.sign(userData, 'my secret', );
 
       comparePasswords(convertData.Password, response[0].password, (err, hash) => {
         res.writeHead(200, {
             'content-Type': 'text/html',
-          'Set-Cookie': [
-            `token=${tokens}; httpOnly`,
-            `user=${JSON.stringify(userData)};`
-          ],
+          'Set-Cookie': `token=${tokens}; httpOnly`
           // 'Content-Type': 'application/json',
         });
         res.end('/');
-      })
+      });
 
-    }, );
+    });
 
   });
 };
@@ -271,6 +267,23 @@ const editData = (req, res) => {
   });
 };
 
+const checkAuth = (req, res , cb) => {
+  const { token } = cookie.parse(req.headers.cookie || '')
+  if(token){
+    jwt.verify(token , 'my secret' , (err , decoded) => {
+      if(err){
+        req.url = '/logout';
+        cb(false , req.url);
+      }else {
+        req.user = decoded;
+        cb(true , req.url);
+      }
+    });
+  }else {
+    cb(false , req.url);
+  }
+}
+
 module.exports = {
   publicHandler,
   homepageHandler,
@@ -282,5 +295,6 @@ module.exports = {
   addUser,
   checkUser,
   login,
-  logout
+  logout,
+  checkAuth
 };
