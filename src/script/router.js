@@ -1,6 +1,7 @@
 const handlers = require('./handlers.js');
 
 const router = (request, response) => {
+
   handlers.checkAuth(request, response , (result , url) => {
     if(result){
       if (url === '/') {
@@ -19,10 +20,12 @@ const router = (request, response) => {
       else if (url.startsWith('/public')) {
         handlers.publicHandler(request, response);
       } else {
-        response.writeHead(404);
-        response.end('PAGE NOT FOUND!!!!!!!!!!');
+        url = '/'
+        handlers.homepageHandler(request, response);
+        
       }
     } else {
+
       if (url === '/signup') {
         handlers.SignUp(request, response);
       }
@@ -39,12 +42,16 @@ const router = (request, response) => {
         handlers.publicHandler(request, response);
       }else if (url === '/addUser') {
         handlers.addUser(request, response);
+      }else if (url === '/logout') {
+        handlers.logout(request, response);
       }
       else {
         response.writeHead(404);
         response.end('PAGE NOT FOUND!!!!!!!!!!');
       }
     }
+
   });
+
 };
 module.exports = router;

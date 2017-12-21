@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 
 const hashed = password => new Promise((resolve, reject) => {
   bcrypt.genSalt(10, (error, salt) => {
-    if (error) console.log(error);
+    if (error) reject(error);
     else {
       bcrypt.hash(password, salt, (err, hash) => {
         if (err) reject(err);
