@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const path = require('path');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('./cryptp.js');
 const jwt = require('jsonwebtoken');
 const cookie = require('cookie');
 
@@ -15,7 +15,6 @@ const editBook = require('../query/update');
 const insertUser = require('../query/insertUser');
 const checkUserdb = require('../query/checkUser');
 
-const jwt = require('jsonwebtoken');
 
 const homepageHandler = (req, res) => {
   fs.readFile(path.join(__dirname, '..', '..', 'public', 'index.html'), (err, file) => {
@@ -33,11 +32,10 @@ const homepageHandler = (req, res) => {
   });
 };
 
- // 0 false null undefined
 const SignUp = (req, res) => {
   if (cookie.parse(req.headers.cookie || '').token) {
-      res.writeHead(302, {'location': '/'});
-      res.end();
+    res.writeHead(302, { location: '/' });
+    res.end();
   }
   fs.readFile(path.join(__dirname, '..', '..', 'public', 'signup.html'), (err, file) => {
     if (err) {
@@ -54,10 +52,10 @@ const SignUp = (req, res) => {
   });
 };
 const login = (req, res) => {
-  if (req.headers.cookie) {
-      res.writeHead(302, {'location': '/'});
-      res.end();
-}
+  if (req.headers.cookie.includes('token=')) {
+    res.writeHead(302, { location: '/' });
+    res.end();
+  }
   fs.readFile(path.join(__dirname, '..', '..', 'public', 'login.html'), (err, file) => {
     if (err) {
       res.writeHead(500, {
@@ -129,7 +127,7 @@ const addUser = (req, res) => {
   });
   req.on('end', () => {
     const convertData = JSON.parse(allData);
-    hashPassword(convertData.Password, (err, hash) => {
+    bcrypt.hashPassword(convertData.Password).then((hash) => {
       insertUser(convertData.username, hash, (err, response) => {
         if (err) {
           res.writeHead(500, {
@@ -143,18 +141,12 @@ const addUser = (req, res) => {
         });
         return res.end('/');
       });
+    }).catch((error) => {
+      console.log(error);
     });
-
   });
 };
 
-const hashPassword = (password, callback) => {
-  bcrypt.genSalt(10, (err, salt) => {
-    bcrypt.hash(password, salt, (err, hash) => {
-      callback(null, hash);
-    })
-  })
-};
 const checkUser = (req, res) => {
   let allData = '';
   req.on('data', (chunkOfData) => {
@@ -168,41 +160,34 @@ const checkUser = (req, res) => {
           'content-Type': 'text/html',
         });
         return res.end('<h1>ERROR handling</h1>');
-      }
-      if (!response.length) {
+      } else if (!response.length) {
         return res.end('<h1>You are not a user. Please sign up</h1>');
-
       }
 
       const userData = {
         userId: response[0].id,
         username: response[0].username,
-        role: 'admin'
-      }
+        role: 'admin',
+      };
 
       const tokens = jwt.sign(userData, 'secret');
 
-      comparePasswords(convertData.Password, response[0].password, (err, hash) => {
+      bcrypt.comparePasswords(convertData.Password, response[0].password).then((hash) => {
         res.writeHead(200, {
-            'content-Type': 'text/html',
+          'content-Type': 'text/html',
           'Set-Cookie': [
             `token=${tokens}; httpOnly`,
-            `user=${JSON.stringify(userData)};`
+            `user=${JSON.stringify(userData)};`,
           ],
-          // 'Content-Type': 'application/json',
         });
         res.end('/');
-      })
-
-    }, );
-
+      }).catch((error) => {
+        console.log(error);
+      });
+    });
   });
 };
-const comparePasswords = (password, hashedPassword, callback) => {
-  bcrypt.compare(password, hashedPassword, (err, hash) => {
-    callback(null, hash);
-  })
-};
+
 const viewData = (req, res) => {
   showData((err, books) => {
     if (err) {
@@ -224,7 +209,6 @@ const deleteData = (req, res) => {
     idBook += chunkOfData;
   });
   req.on('end', () => {
-
     deleteBook(idBook, (err, book) => {
       if (err) {
         res.writeHead(500, {
@@ -241,8 +225,8 @@ const deleteData = (req, res) => {
 };
 const logout = (req, res) => {
   res.writeHead(200, {
-      'content-Type': 'text/html',
-    'Set-Cookie': `token=0; Max-Age=0`,
+    'content-Type': 'text/html',
+    'Set-Cookie': 'token=0; Max-Age=0',
   });
   res.end('/');
 };
@@ -282,5 +266,5 @@ module.exports = {
   addUser,
   checkUser,
   login,
-  logout
+  logout,
 };
