@@ -19,7 +19,7 @@ It's an app for library to store book and reserve it but we don't have time to f
 
 Run this project on your Local Machine
 
-1. our Page :[in heroku]()
+1. our Page :[in heroku](https://gsg-libr-auth.herokuapp.com/)
 
 2. Clone the repo:
 
