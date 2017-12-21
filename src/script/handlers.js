@@ -17,20 +17,24 @@ const checkUserdb = require('../query/checkUser');
 
 
 const homepageHandler = (req, res) => {
-  console.log(req.user);
-  fs.readFile(path.join(__dirname, '..', '..', 'public', 'index.html'), (err, file) => {
-    if (err) {
-      res.writeHead(500, {
-        'content-type': 'text/html',
-      });
-      res.end('<h1>SERVER ERROR</h1>');
-    } else {
-      res.writeHead(200, {
-        'content-type': 'text/html',
-      });
-      res.end(file);
-    }
-  });
+  if (req.headers.cookie.includes('token=')) {
+    fs.readFile(path.join(__dirname, '..', '..', 'public', 'index.html'), (err, file) => {
+      if (err) {
+        res.writeHead(500, {
+          'content-type': 'text/html',
+        });
+        res.end('<h1>SERVER ERROR</h1>');
+      } else {
+        res.writeHead(200, {
+          'content-type': 'text/html',
+        });
+        res.end(file);
+      }
+    });
+  } else {
+    res.writeHead(302, { Location: '/' });
+    res.end();
+  }
 };
 
 const SignUp = (req, res) => {
