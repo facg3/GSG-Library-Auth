@@ -18,8 +18,8 @@ const router = (request, response) => {
       } else if (url.startsWith('/public')) {
         handlers.publicHandler(request, response);
       } else {
-        response.writeHead(404);
-        response.end('PAGE NOT FOUND!!!!!!!!!!');
+        url = '/';
+        handlers.homepageHandler(request, response);
       }
     } else if (url === '/signup') {
       handlers.SignUp(request, response);
@@ -33,6 +33,20 @@ const router = (request, response) => {
       handlers.publicHandler(request, response);
     } else if (url === '/addUser') {
       handlers.addUser(request, response);
+    } else if (url === '/signup') {
+      handlers.SignUp(request, response);
+    } else if (url === '/') {
+      handlers.login(request, response);
+    } else if (url === '/checkUser') {
+      handlers.checkUser(request, response);
+    } else if (url === '/login') {
+      handlers.login(request, response);
+    } else if (url.startsWith('/public')) {
+      handlers.publicHandler(request, response);
+    } else if (url === '/addUser') {
+      handlers.addUser(request, response);
+    } else if (url === '/logout') {
+      handlers.logout(request, response);
     } else {
       response.writeHead(404);
       response.end('PAGE NOT FOUND!!!!!!!!!!');

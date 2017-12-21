@@ -1,23 +1,17 @@
 const fs = require('fs');
-
 const path = require('path');
 const bcrypt = require('./cryptp.js');
 const jwt = require('jsonwebtoken');
 const cookie = require('cookie');
-
 const insert = require('../query/insert');
-
 const showData = require('../query/selectAll');
-
 const deleteBook = require('../query/deleteBook');
-
 const editBook = require('../query/update');
 const insertUser = require('../query/insertUser');
 const checkUserdb = require('../query/checkUser');
 
 
 const homepageHandler = (req, res) => {
-  if (req.headers.cookie.includes('token=')) {
     fs.readFile(path.join(__dirname, '..', '..', 'public', 'index.html'), (err, file) => {
       if (err) {
         res.writeHead(500, {
@@ -38,10 +32,7 @@ const homepageHandler = (req, res) => {
 };
 
 const SignUp = (req, res) => {
-  if (cookie.parse(req.headers.cookie || '').token) {
-    res.writeHead(302, { location: '/' });
-    res.end();
-  }
+
   fs.readFile(path.join(__dirname, '..', '..', 'public', 'signup.html'), (err, file) => {
     if (err) {
       res.writeHead(500, {
@@ -57,10 +48,7 @@ const SignUp = (req, res) => {
   });
 };
 const login = (req, res) => {
-  if (req.headers.cookie.includes('token=')) {
-    res.writeHead(302, { location: '/' });
-    res.end();
-  }
+
   fs.readFile(path.join(__dirname, '..', '..', 'public', 'login.html'), (err, file) => {
     if (err) {
       res.writeHead(500, {
@@ -178,9 +166,8 @@ const checkUser = (req, res) => {
 
       bcrypt.comparePasswords(convertData.Password, response[0].password).then((hash) => {
         res.writeHead(200, {
-          'content-Type': 'text/html',
-          'Set-Cookie': `token=${tokens}; httpOnly`,
-
+            'content-Type': 'text/html',
+          'Set-Cookie': `token=${tokens}; httpOnly`
         });
         res.end('/');
       });
@@ -255,14 +242,13 @@ const editData = (req, res) => {
   });
 };
 
-const checkAuth = (req, res, cb) => {
-  const { token } = cookie.parse(req.headers.cookie || '');
-  if (token) {
-    jwt.verify(token, 'my secret', (err, decoded) => {
-      if (err) {
-        req.url = '/logout';
-        cb(false, req.url);
-      } else {
+const checkAuth = (req, res , cb) => {
+  const { token } = cookie.parse(req.headers.cookie || '')
+  if(token){
+    jwt.verify(token , 'my secret' , (err , decoded) => {
+      if(err){
+        cb(false , req.url);
+      }else {
         req.user = decoded;
         cb(true, req.url);
       }
